@@ -38,6 +38,7 @@ development purposes, particularly suitable for Drupal or Symfony environments.
 - `7.4.27-apache-bullseye`, `7.4-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/bullseye/apache/Dockerfile)
 - `7.4.27-apache-buster`, `7.4-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/buster/apache/Dockerfile)
 - `7.3.33-apache-buster`, `7.3-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.3/buster/apache/Dockerfile)
+- `7.2.26-apache-buster`, `7.2-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.2/buster/apache/Dockerfile)
 
 ## How to use this image
 
