@@ -1,3 +1,6 @@
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+
 PHP Packaged by Bmeme
 =========
 
@@ -54,8 +57,8 @@ Where `src/` is the directory containing all your PHP code.
 
 Then, run the commands to build and run the Docker image:
 ```shell
-$ docker build -t myphpimage:latest .`
-$ docker run -d --name myphpcontainer myphpimage:latest`
+$ docker build -t myphpimage:latest .
+$ docker run -d --name myphpcontainer myphpimage:latest
 ```
 
 ### With a database image
@@ -67,27 +70,27 @@ $ docker run --name myapplication --link mydatabase -d bmeme/php:latest
 ## Custom environments
 
 ### PHP settings environments
-| Variable Name  | Description                                                          | Default              |
-|----------------|----------------------------------------------------------------------|----------------------|
-| `COMPOSER_HOME`| home directory where composer will store packages and configuration. | `/var/www/.composer` |
-| `TIMEZONE`| Image Timezone                                                       | `Europe/Rome`        |
-| `PHP_MEMORY_LIMIT`| `memory_limit` PHP value                                             | `512M`               |
-| `PHP_MAX_EXECUTION_TIME`| `max_execution_time` PHP value                                       | `60`                 |
-| `PHP_LOG_ENABLED`| `log_errors` PHP value. Boolean.                                     | `1`                  |
-| `PHP_ERROR_LOG`| `error_log` PHP value.                                 | `/tmp/php_errors.log`                  |
-| `PHP_UPLOAD_MAX_FILESIZE`| `upload_max_filesize` PHP value.                                 | `20M`                  |
-| `PHP_POST_MAX_SIZE`| `post_max_size` PHP value.                                 | `20M`                  |
-| `PHP_SENDMAIL`| `sendmail_path` PHP value.                                 | `/usr/local/sendmail`                  |
+| Variable Name | Description | Default |
+|---------------|-------------|---------|
+|`COMPOSER_HOME`|home directory where composer will store packages and configuration.|`/var/www/.composer` |
+| `TIMEZONE`| Image Timezone | `Europe/Rome` |
+| `PHP_MEMORY_LIMIT`| `memory_limit` PHP value | `512M`  |
+| `PHP_MAX_EXECUTION_TIME`| `max_execution_time` PHP value | `60`    |
+| `PHP_LOG_ENABLED`| `log_errors` PHP value. Boolean. | `1`     |
+| `PHP_ERROR_LOG`| `error_log` PHP value. | `/tmp/php_errors.log` |
+| `PHP_UPLOAD_MAX_FILESIZE`| `upload_max_filesize` PHP value. | `20M`   |
+| `PHP_POST_MAX_SIZE`| `post_max_size` PHP value. | `20M`   |
+| `PHP_SENDMAIL`| `sendmail_path` PHP value. | `/usr/local/sendmail` |
 
 ### OpCache config environments
-| Variable Name  | Description                                            | Default              |
-|----------------|--------------------------------------------------------|----------------------|
-| `OPCACHE_ENABLED`| `opcache.enable` PHP value                             | `1`                  |
-| `OPCACHE_MEMORY_CONSUMPTION`| `opcache.memory_consumption` opcache config value              | `128` |
+| Variable Name  | Description | Default |
+|----------------|-------------|---------|
+| `OPCACHE_ENABLED`| `opcache.enable` PHP value | `1` |
+| `OPCACHE_MEMORY_CONSUMPTION`| `opcache.memory_consumption` opcache config value | `128` |
 | `OPCACHE_INTERNED_STRINGS_BUFFER`| `opcache.interned_strings_buffer` opcache config value | `8` |
-| `OPCACHE_MAX_ACCELERATED_FILES`| `opcache.max_accelerated_files` opcache config value           | `4000` |
-| `OPCACHE_REVALIDATE_FREQ`| `opcache.revalidate_freq` opcache config value           | `60` |
-| `OPCACHE_FAST_SHUTDOWN`| `opcache.fast_shutdown` opcache config value           | `1` |
+| `OPCACHE_MAX_ACCELERATED_FILES`| `opcache.max_accelerated_files` opcache config value | `4000` |
+| `OPCACHE_REVALIDATE_FREQ`| `opcache.revalidate_freq` opcache config value | `60` |
+| `OPCACHE_FAST_SHUTDOWN`| `opcache.fast_shutdown` opcache config value | `1` |
 
 For more infos about OpCache configuration @see https://www.php.net/manual/en/opcache.configuration.php
 
@@ -114,5 +117,6 @@ services:
 
 ## Credits
 This project is a contribution of [Bmeme :: The Digital Factory](http://www.bmeme.com).
-This library is actually maintained by [Daniele Piaggesi](mailto:daniele.piaggesi@bmeme.com) and [Roberto Mariani](mailto:roberto.mariani@bmeme.com).
+This library is actually maintained by [Daniele Piaggesi](https://github.com/g0blin79), 
+[Roberto Mariani](https://github.com/jean-louis) and [Michele Mondelli](https://github.com/Mithenks).
 Any other contribution will be really appreciated.

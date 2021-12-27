@@ -1,5 +1,14 @@
 #!/bin/bash
 
+## Simple script to build images
+# Usage:
+# $ scripts/build.sh [PHP_PRETTY_VERSION] [OS_VERSION] [PHP_TYPE]
+#
+# where:
+# PHP_PRETTY_VERSION: major.minor version of PHP ex: 8.0
+# OS_VERSION: Debian version (buster/bullseyes)
+# PHP_TYPE: at this stage only `apache`
+
 set -o errexit
 set -o nounset
 set -o pipefail
