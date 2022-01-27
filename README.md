@@ -21,19 +21,21 @@ development purposes, particularly suitable for Drupal or Symfony environments.
   * `gd`
   * `intl`
   * `igbinary`
-  * `mcrypt`
+  * `mcrypt` only for 8.0 and older
   * `oauth`
   * `opcache`
   * `pdo_mysql`
   * `pdo_pgsql`
   * `phpredis`
-  * `sockets`
+  * `sockets` only 8.0 and older
   * `zip`
 * Composer 
 * Ansible (used in Bmeme for all automation tasks, @see [here](https://github.com/bmeme/ansible-role-drupal), for example)
 
 ## Supported tags and respective `Dockerfile` links
-- `8.0.14-apache-bullseye`, `8.0-apache-bullseye`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.0/bullseye/apache/Dockerfile)
+- `8.1.2-apache-bullseye`, `8.1-apache-bullseye`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bullseye/apache/Dockerfile)
+- `8.1.2-apache-buster`, `8.1-apache-buster`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/buster/apache/Dockerfile)
+- `8.0.14-apache-bullseye`, `8.0-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.0/bullseye/apache/Dockerfile)
 - `8.0.14-apache-buster`, `8.0-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.0/buster/apache/Dockerfile)
 - `7.4.27-apache-bullseye`, `7.4-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/bullseye/apache/Dockerfile)
 - `7.4.27-apache-buster`, `7.4-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/buster/apache/Dockerfile)
