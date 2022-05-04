@@ -25,13 +25,13 @@ FROM=$(head -1 "${DOCKERFILE}" | awk '{print $2}')
 PHP_VERSION=$(echo "${FROM}" | awk -F: '{print $2}' | awk -F- '{print $1}' )
 LATEST=$(cat .latest)
 
-docker build --cache-from bmeme/php:"${PHP_PRETTY_VERSION}"-"${PHP_TYPE}"-"${OS_VERSION}" \
+docker build \
   -f "${PHP_PRETTY_VERSION}"/"${OS_VERSION}"/"${PHP_TYPE}"/Dockerfile \
   -t bmeme/php:"${PHP_PRETTY_VERSION}"-"${PHP_TYPE}"-"${OS_VERSION}" \
   -t bmeme/php:"${PHP_VERSION}"-"${PHP_TYPE}"-"${OS_VERSION}" .
 
 if [[ $(echo "${FROM}" | awk -F: '{print $2}') == "${LATEST}" ]]; then
-    docker build --cache-from bmeme/php:"${PHP_PRETTY_VERSION}"-"${PHP_TYPE}"-"${OS_VERSION}" \
+    docker build \
       -f "${PHP_PRETTY_VERSION}"/"${OS_VERSION}"/"${PHP_TYPE}"/Dockerfile \
       -t bmeme/php:latest .
 fi

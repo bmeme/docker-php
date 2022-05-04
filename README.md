@@ -33,6 +33,7 @@ development purposes, particularly suitable for Drupal or Symfony environments.
 * Ansible (used in Bmeme for all automation tasks, @see [here](https://github.com/bmeme/ansible-role-drupal), for example)
 
 ## Supported tags and respective `Dockerfile` links
+- `8.1.5-fpm-alpine3.15`, `8.1-fpm-alpine3.15`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/alpine3.15/fpm/Dockerfile) - **EXPERIMENTAL**
 - `8.1.2-apache-bullseye`, `8.1-apache-bullseye`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bullseye/apache/Dockerfile)
 - `8.1.2-apache-buster`, `8.1-apache-buster`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/buster/apache/Dockerfile)
 - `8.0.14-apache-bullseye`, `8.0-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.0/bullseye/apache/Dockerfile)
@@ -103,13 +104,13 @@ For more infos about OpCache configuration @see https://www.php.net/manual/en/op
 version: '3.1'
 services:
   php:
-    image: bmeme/php-dev:latest
+    image: bmeme/php:latest
     ports:
       - 8080:80
     environment: # just as example
       - PHP_MEMORY_LIMIT=256M
       - OPCACHE_ENABLED=0
-  postgres:
+  mariadb:
     image: bitnami/mariadb:latest
     environment:
       - ALLOW_EMPTY_PASSWORD: yes
