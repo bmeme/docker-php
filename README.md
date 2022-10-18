@@ -38,8 +38,8 @@ development purposes, particularly suitable for Drupal or Symfony environments.
 - `8.1.2-apache-buster`, `8.1-apache-buster`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/buster/apache/Dockerfile)
 - `8.0.14-apache-bullseye`, `8.0-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.0/bullseye/apache/Dockerfile)
 - `8.0.14-apache-buster`, `8.0-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.0/buster/apache/Dockerfile)
-- `7.4.27-apache-bullseye`, `7.4-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/bullseye/apache/Dockerfile)
-- `7.4.27-apache-buster`, `7.4-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/buster/apache/Dockerfile)
+- `7.4.32-apache-bullseye`, `7.4-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/bullseye/apache/Dockerfile)
+- `7.4.32-apache-buster`, `7.4-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/buster/apache/Dockerfile)
 - `7.3.33-apache-buster`, `7.3-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.3/buster/apache/Dockerfile)
 - `7.2.26-apache-buster`, `7.2-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.2/buster/apache/Dockerfile)
 
