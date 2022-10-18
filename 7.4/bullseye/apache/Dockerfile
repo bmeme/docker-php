@@ -1,15 +1,15 @@
-FROM php:7.4.27-apache-bullseye
+FROM php:7.4.32-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='7.4.27-apache-bullseye' \
+        com.bmeme.project.version='7.4.32-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
         com.bmeme.maintainer.3='Michele Mondelli <michele.mondelli@bmeme.com>' \
-        com.bmeme.refreshedat='2021-12-26'
+        com.bmeme.refreshedat='2021-10-18'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
     # @see https://getcomposer.org/download/
-    COMPOSER_VERSION='2.2.1' \
+    COMPOSER_VERSION='2.4.1' \
     TIMEZONE=Europe/Rome
 
 # PHP extensions variables
