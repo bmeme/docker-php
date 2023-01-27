@@ -34,6 +34,7 @@ development purposes, particularly suitable for Drupal or Symfony environments.
 
 ## Supported tags and respective `Dockerfile` links
 - `8.2.1-apache-bullseye`, `8.2-apache-bullseye`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/bullseye/apache/Dockerfile)
+- `8.2.1-apache-buster`, `8.2-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/buster/apache/Dockerfile)
 - `8.1.14-fpm-alpine3.17`, `8.1-fpm-alpine3.17`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
 - `8.1.14-apache-bullseye`, `8.1-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bullseye/apache/Dockerfile)
 - `8.1.14-apache-buster`, `8.1-apache-buster`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/buster/apache/Dockerfile)
