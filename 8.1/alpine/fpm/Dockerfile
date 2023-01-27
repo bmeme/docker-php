@@ -1,22 +1,22 @@
-FROM php:8.1.5-fpm-alpine3.15
+FROM php:8.1.14-fpm-alpine3.17
 LABEL   com.bmeme.project.family='PHP Docker Image' \
         com.bmeme.project.version='8.1.5-fpm-alpine3.15' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
         com.bmeme.maintainer.3='Michele Mondelli <michele.mondelli@bmeme.com>' \
-        com.bmeme.refreshedat='2022-05-03'
+        com.bmeme.refreshedat='2023-01-27'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
     # @see https://getcomposer.org/download/
-    COMPOSER_VERSION='2.2.5' \
+    COMPOSER_VERSION='2.5.1' \
     TIMEZONE=Europe/Rome
 
 # PHP extensions variables
-ENV IGBINARY_VERSION=3.2.6 \
-    MCRYPT_VERSION=1.0.4 \
+ENV IGBINARY_VERSION=3.2.12 \
+    MCRYPT_VERSION=1.0.5 \
     OAUTH_VERSION=2.0.7 \
-    REDIS_VERSION=5.3.6
+    REDIS_VERSION=5.3.7
 
 # PHP environment variables
 ENV PHP_MEMORY_LIMIT=512M \
