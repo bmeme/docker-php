@@ -4,7 +4,7 @@
 PHP Packaged by Bmeme
 =========
 
-PHP docker images based on [official PHP repository](https://hub.docker.com/_/php/), currently used by Bmeme for its 
+PHP docker images based on [official PHP repository](https://hub.docker.com/_/php/), currently used by Bmeme for its
 development purposes, particularly suitable for Drupal or Symfony environments.
 
 ## What is contained in the images
@@ -17,7 +17,7 @@ development purposes, particularly suitable for Drupal or Symfony environments.
   * `vim`
   * `zip`
 * The following php extensions
-  * `bcmath` 
+  * `bcmath`
   * `gd`
   * `intl`
   * `igbinary`
@@ -29,10 +29,11 @@ development purposes, particularly suitable for Drupal or Symfony environments.
   * `phpredis`
   * `sockets` only 8.0 and older
   * `zip`
-* Composer 
+* Composer
 * Ansible (used in Bmeme for all automation tasks, @see [here](https://github.com/bmeme/ansible-role-drupal), for example)
 
 ## Supported tags and respective `Dockerfile` links
+- `8.2.4-fpm-alpine3.17`, `8.2-fpm-alpine3.17`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
 - `8.2.1-apache-bullseye`, `8.2-apache-bullseye`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/bullseye/apache/Dockerfile)
 - `8.2.1-apache-buster`, `8.2-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/buster/apache/Dockerfile)
 - `8.1.14-fpm-alpine3.17`, `8.1-fpm-alpine3.17`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
@@ -117,12 +118,12 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD: yes
       - MARIADB_DATABASE: mydatabase
-      - MARIADB_USER: myuser 
-      - MARIADB_PASSWORD: secret 
+      - MARIADB_USER: myuser
+      - MARIADB_PASSWORD: secret
 ```
 
 ## Credits
 This project is a contribution of [Bmeme :: The Digital Factory](http://www.bmeme.com).
-This library is actually maintained by [Daniele Piaggesi](https://github.com/g0blin79), 
+This library is actually maintained by [Daniele Piaggesi](https://github.com/g0blin79),
 [Roberto Mariani](https://github.com/jean-louis) and [Michele Mondelli](https://github.com/Mithenks).
 Any other contribution will be really appreciated.
