@@ -3,7 +3,6 @@ LABEL   com.bmeme.project.family='PHP Docker Image' \
         com.bmeme.project.version='7.4.32-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.maintainer.3='Michele Mondelli <michele.mondelli@bmeme.com>' \
         com.bmeme.refreshedat='2021-10-18'
 
 # Variables

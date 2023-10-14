@@ -1,22 +1,21 @@
-FROM php:8.2.1-apache-bullseye
+FROM php:8.2.11-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.2.1-apache-bullseye' \
+        com.bmeme.project.version='8.2.11-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.maintainer.3='Michele Mondelli <michele.mondelli@bmeme.com>' \
-        com.bmeme.refreshedat='2023-01-22'
+        com.bmeme.refreshedat='2023-10-14'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
     # @see https://getcomposer.org/download/
-    COMPOSER_VERSION='2.5.1' \
+    COMPOSER_VERSION='2.6.5' \
     TIMEZONE=Europe/Rome
 
 # PHP extensions variables
-ENV IGBINARY_VERSION=3.2.12 \
-    MCRYPT_VERSION=1.0.5 \
+ENV IGBINARY_VERSION=3.2.14 \
+    MCRYPT_VERSION=1.0.6 \
     OAUTH_VERSION=2.0.7 \
-    REDIS_VERSION=5.3.7
+    REDIS_VERSION=6.0.1
 
 # PHP environment variables
 ENV PHP_MEMORY_LIMIT=512M \
@@ -70,9 +69,7 @@ RUN set -eux; \
 	; \
 	\
 	pecl install \
-        # mcrypt is not available for php >= 8.1.1 \
-        # @see https://pecl.php.net/package/mcrypt
-	    # mcrypt-${MCRYPT_VERSION} \
+	    mcrypt-${MCRYPT_VERSION} \
 	    igbinary-${IGBINARY_VERSION} \
 	    oauth-${OAUTH_VERSION} \
 	; \
@@ -92,9 +89,7 @@ RUN set -eux; \
 	;\
 	\
 	docker-php-ext-enable \
-        # mcrypt is not available for php >= 8.1.1 \
-        # @see https://pecl.php.net/package/mcrypt
-	    # mcrypt \
+	    mcrypt \
 	    igbinary \
 	    oauth \
 	; \
