@@ -1,14 +1,26 @@
-FROM php:8.2.11-apache-bullseye
+FROM composer:2.6.5 as composer
+FROM php:8.2.12-apache-bullseye as ansible
+
+ENV ANSIBLE_CORE_VERSION 2.15
+
+RUN set -eux; \
+	# install python 
+	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils; \
+    \
+	# install ansible
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
+    python3 get-pip.py; \
+    pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
+
+FROM php:8.2.12-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.2.11-apache-bullseye' \
+        com.bmeme.project.version='8.2.12-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.refreshedat='2023-10-14'
+        com.bmeme.refreshedat='2023-11-18'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
-    # @see https://getcomposer.org/download/
-    COMPOSER_VERSION='2.6.5' \
     TIMEZONE=Europe/Rome
 
 # PHP extensions variables
@@ -44,6 +56,14 @@ ENV PERSISTENT_PROGRAMS \
     unzip \
     vim \
     zip
+
+# install Composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+# install Ansible
+COPY --from=ansible /usr/lib/python3.9/lib-dynload /usr/lib/python3.9/lib-dynload
+COPY --from=ansible /usr/local/lib/python3.9/dist-packages /usr/local/lib/python3.9/dist-packages
+COPY --from=ansible /usr/local/bin/ansible* /usr/local/bin/
 
 # install the PHP extensions we need
 RUN set -eux; \
@@ -107,19 +127,11 @@ RUN set -eux; \
 		zip \
 	; \
 	\
-    # install composer
-    mkdir ${COMPOSER_HOME}; \
-    curl -k -sS https://getcomposer.org/installer \
-        | php -- --install-dir=/usr/local/bin --version=${COMPOSER_VERSION} --filename=composer; \
-    # install ansible
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
-    python3 get-pip.py; \
-    pip install ansible; \
     # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual ${savedAptMark}; \
 	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
-		| awk '/=>/ { print $3 }' \
+		| awk "/=>/ { print $3 }" \
 		| sort -u \
 		| xargs -r dpkg-query -S \
 		| cut -d: -f1 \
@@ -139,28 +151,31 @@ RUN set -eux; \
 	cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime; \
     echo "${TIMEZONE}" > /etc/timezone; \
     \
+	# configure composer home directory
+    mkdir ${COMPOSER_HOME}; \
+	\
     # set application ini settings
     { \
-        echo 'date.timezone = ${TIMEZONE}'; \
-        echo 'error_log = ${PHP_ERROR_LOG}'; \
-        echo 'log_errors = ${PHP_LOG_ENABLED}'; \
-        echo 'max_execution_time = ${PHP_MAX_EXECUTION_TIME}'; \
-        echo 'memory_limit = ${PHP_MEMORY_LIMIT}'; \
-        echo 'post_max_size = ${PHP_POST_MAX_SIZE}'; \
-        echo 'sendmail_path = ${PHP_SENDMAIL}'; \
-        echo 'upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}'; \
+        echo "date.timezone = ${TIMEZONE}"; \
+        echo "error_log = ${PHP_ERROR_LOG}"; \
+        echo "log_errors = ${PHP_LOG_ENABLED}"; \
+        echo "max_execution_time = ${PHP_MAX_EXECUTION_TIME}"; \
+        echo "memory_limit = ${PHP_MEMORY_LIMIT}"; \
+        echo "post_max_size = ${PHP_POST_MAX_SIZE}"; \
+        echo "sendmail_path = ${PHP_SENDMAIL}"; \
+        echo "upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}"; \
 	} > /usr/local/etc/php/conf.d/application.ini; \
 	\
     # set opcache ini settings
     # see https://secure.php.net/manual/en/opcache.installation.php
     { \
-		echo 'opcache.enable = ${OPCACHE_ENABLED}'; \
-		echo 'opcache.memory_consumption = ${OPCACHE_MEMORY_CONSUMPTION}'; \
-		echo 'opcache.interned_strings_buffer = ${OPCACHE_INTERNED_STRINGS_BUFFER}'; \
-		echo 'opcache.max_accelerated_files = ${OPCACHE_MAX_ACCELERATED_FILES}'; \
-		echo 'opcache.revalidate_freq = ${OPCACHE_REVALIDATE_FREQ}'; \
-		echo 'opcache.fast_shutdown = ${OPCACHE_FAST_SHUTDOWN}'; \
+		echo "opcache.enable = ${OPCACHE_ENABLED}"; \
+		echo "opcache.memory_consumption = ${OPCACHE_MEMORY_CONSUMPTION}"; \
+		echo "opcache.interned_strings_buffer = ${OPCACHE_INTERNED_STRINGS_BUFFER}"; \
+		echo "opcache.max_accelerated_files = ${OPCACHE_MAX_ACCELERATED_FILES}"; \
+		echo "opcache.revalidate_freq = ${OPCACHE_REVALIDATE_FREQ}"; \
+		echo "opcache.fast_shutdown = ${OPCACHE_FAST_SHUTDOWN}"; \
 	} > /usr/local/etc/php/conf.d/opcache.ini; \
 	\
 	# inject index.php
-	echo '<?php phpinfo();' > /var/www/html/index.php
+	echo "<?php phpinfo();" > /var/www/html/index.php

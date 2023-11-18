@@ -1,0 +1,101 @@
+---
+name: CI Bmeme PHP container images
+on:
+  push:
+    branches:
+      - "*"
+      - "!main"
+
+env:
+  registry: docker.io
+  repository: bmeme/php
+
+jobs:
+
+  configure:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - 
+        name: Checkout to repository
+        uses: actions/checkout@v3
+      -
+        name: Set matrix data
+        id: set-matrix
+        run: echo "matrix=$(jq -c . < ./config.json)" >> $GITHUB_OUTPUT
+  
+  build:
+    name: Build and test Bmeme PHP container images using Docker
+    runs-on: ubuntu-latest
+    needs: configure
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
+    steps:
+      - 
+        name: Check out the codebase.
+        uses: actions/checkout@v3
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Lint Dockerfile
+        id: lint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ matrix.php_pretty_version }}/${{ matrix.os_version }}/${{ matrix.php_type }}/Dockerfile
+          config: .hadolint.yaml
+      -
+        name: Build images
+        id: build
+        env:
+          DOCKERFILE: ${{ matrix.php_pretty_version }}/${{ matrix.os_version }}/${{ matrix.php_type }}/Dockerfile
+          PRETTY_TAG: ${{ matrix.php_pretty_version }}-${{ matrix.php_type }}-${{ matrix.os_version }}
+          MAIN_TAG: ${{ matrix.name }}
+        run: |
+          {
+            docker build \
+              -t ${{ env.registry }}/${{ env.repository }}:${MAIN_TAG} \
+              -t ${{ env.registry }}/${{ env.repository }}:${PRETTY_TAG} \
+              -f ${DOCKERFILE} .; \
+            
+            if ${{ matrix.latest }}; then
+              docker build -t ${{ env.registry }}/${{ env.repository }}:latest \
+                 -f ${DOCKERFILE} .; \
+            fi
+          }
+      - 
+        name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        id: trivy
+        with:
+          image-ref: ${{ env.registry }}/${{ env.repository }}:${{ matrix.name }}
+          format: 'sarif'
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL'
+          output: 'trivy-results-${{ matrix.name }}.sarif'
+      -
+        name: Upload Trivy scan results to GitHub Security tab
+        id: trivy-upload
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results-${{ matrix.name }}.sarif'
+      -
+        name: Scan image
+        id: scan
+        uses: anchore/scan-action@v3
+        with:
+          image: ${{ env.registry }}/${{ env.repository }}:${{ matrix.name }}
+          severity-cutoff: critical
+          fail-build: false
+      - 
+        name: upload Anchore scan SARIF report
+        id: scan-upload
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}

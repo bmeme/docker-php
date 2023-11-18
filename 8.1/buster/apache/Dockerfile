@@ -1,9 +1,8 @@
 FROM php:8.1.14-apache-buster
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.1.2-apache-buster' \
+        com.bmeme.project.version='8.1.14-apache-buster' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.maintainer.3='Michele Mondelli <michele.mondelli@bmeme.com>' \
         com.bmeme.refreshedat='2023-01-27'
 
 # Variables

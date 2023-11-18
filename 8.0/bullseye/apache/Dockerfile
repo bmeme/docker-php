@@ -9,7 +9,8 @@ LABEL   com.bmeme.project.family='PHP Docker Image' \
 ENV COMPOSER_HOME=/var/www/.composer \
     # @see https://getcomposer.org/download/
     COMPOSER_VERSION='2.6.5' \
-    TIMEZONE=Europe/Rome
+    TIMEZONE=Europe/Rome \
+	ANSIBLE_VERSION=8.5.0
 
 # PHP extensions variables
 ENV IGBINARY_VERSION=3.2.14 \
@@ -113,7 +114,7 @@ RUN set -eux; \
     # install ansible
     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
     python3 get-pip.py; \
-    pip install ansible; \
+    pip install --no-cache-dir ansible==${ANSIBLE_VERSION}; \
     # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual ${savedAptMark}; \
@@ -140,26 +141,26 @@ RUN set -eux; \
     \
     # set application ini settings
     { \
-        echo 'date.timezone = ${TIMEZONE}'; \
-        echo 'error_log = ${PHP_ERROR_LOG}'; \
-        echo 'log_errors = ${PHP_LOG_ENABLED}'; \
-        echo 'max_execution_time = ${PHP_MAX_EXECUTION_TIME}'; \
-        echo 'memory_limit = ${PHP_MEMORY_LIMIT}'; \
-        echo 'post_max_size = ${PHP_POST_MAX_SIZE}'; \
-        echo 'sendmail_path = ${PHP_SENDMAIL}'; \
-        echo 'upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}'; \
+        echo "date.timezone = ${TIMEZONE}"; \
+        echo "error_log = ${PHP_ERROR_LOG}"; \
+        echo "log_errors = ${PHP_LOG_ENABLED}"; \
+        echo "max_execution_time = ${PHP_MAX_EXECUTION_TIME}"; \
+        echo "memory_limit = ${PHP_MEMORY_LIMIT}"; \
+        echo "post_max_size = ${PHP_POST_MAX_SIZE}"; \
+        echo "sendmail_path = ${PHP_SENDMAIL}"; \
+        echo "upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}"; \
 	} > /usr/local/etc/php/conf.d/application.ini; \
 	\
     # set opcache ini settings
     # see https://secure.php.net/manual/en/opcache.installation.php
     { \
-		echo 'opcache.enable = ${OPCACHE_ENABLED}'; \
-		echo 'opcache.memory_consumption = ${OPCACHE_MEMORY_CONSUMPTION}'; \
-		echo 'opcache.interned_strings_buffer = ${OPCACHE_INTERNED_STRINGS_BUFFER}'; \
-		echo 'opcache.max_accelerated_files = ${OPCACHE_MAX_ACCELERATED_FILES}'; \
-		echo 'opcache.revalidate_freq = ${OPCACHE_REVALIDATE_FREQ}'; \
-		echo 'opcache.fast_shutdown = ${OPCACHE_FAST_SHUTDOWN}'; \
+		echo "opcache.enable = ${OPCACHE_ENABLED}"; \
+		echo "opcache.memory_consumption = ${OPCACHE_MEMORY_CONSUMPTION}"; \
+		echo "opcache.interned_strings_buffer = ${OPCACHE_INTERNED_STRINGS_BUFFER}"; \
+		echo "opcache.max_accelerated_files = ${OPCACHE_MAX_ACCELERATED_FILES}"; \
+		echo "opcache.revalidate_freq = ${OPCACHE_REVALIDATE_FREQ}"; \
+		echo "opcache.fast_shutdown = ${OPCACHE_FAST_SHUTDOWN}"; \
 	} > /usr/local/etc/php/conf.d/opcache.ini; \
 	\
 	# inject index.php
-	echo '<?php phpinfo();' > /var/www/html/index.php
+	echo "<?php phpinfo();" > /var/www/html/index.php
