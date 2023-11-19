@@ -33,16 +33,19 @@ development purposes, particularly suitable for Drupal or Symfony environments.
 * Ansible (used in Bmeme for all automation tasks, @see [here](https://github.com/bmeme/ansible-role-drupal), for example)
 
 ## Supported tags and respective `Dockerfile` links
-- `8.2.11-fpm-alpine`, `8.2-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
-- `8.2.11-apache-bullseye`, `8.2-apache-bullseye`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/bullseye/apache/Dockerfile)
-- `8.1.24-fpm-alpine`, `8.1-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
-- `8.1.24-apache-bullseye`, `8.1-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bullseye/apache/Dockerfile)
+- `8.2.12-fpm-alpine`, `8.2-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
+- `8.2.12-apache-bullseye`, `8.2-apache-bullseye`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/bullseye/apache/Dockerfile)
+- `8.1.25-fpm-alpine`, `8.1-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
+- `8.1.25-apache-bullseye`, `8.1-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bullseye/apache/Dockerfile)
 - `8.0.30-apache-bullseye`, `8.0-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.0/bullseye/apache/Dockerfile)
+
+## Existent tags not more supported
+- `8.1.14-apache-buster`, `8.1-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/buster/apache/Dockerfile)
 - `8.0.30-apache-buster`, `8.0-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.0/buster/apache/Dockerfile)
-- `7.4.32-apache-bullseye`, `7.4-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/bullseye/apache/Dockerfile)
-- `7.4.32-apache-buster`, `7.4-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/buster/apache/Dockerfile)
-- `7.3.33-apache-buster`, `7.3-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.3/buster/apache/Dockerfile)
-- `7.2.26-apache-buster`, `7.2-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.2/buster/apache/Dockerfile)
+- `7.4.32-apache-bullseye`, `7.4-apache-bullseye`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/bullseye/apache/Dockerfile)
+- `7.4.32-apache-buster`, `7.4-apache-buster`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.4/buster/apache/Dockerfile)
+- `7.3.33-apache-buster`, `7.3-apache-buster`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.3/buster/apache/Dockerfile)
+- `7.2.26-apache-buster`, `7.2-apache-buster`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/7.2/buster/apache/Dockerfile)
 
 ## How to use this image
 
