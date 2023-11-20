@@ -1,4 +1,17 @@
 FROM composer:2.6.5 as composer
+FROM php:8.1.25-apache-bullseye as ansible
+
+ENV ANSIBLE_CORE_VERSION 2.15.6
+
+RUN set -eux; \
+	# install python 
+	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils; \
+    \
+	# install ansible
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
+    python3 get-pip.py; \
+    pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
+
 FROM php:8.1.25-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
         com.bmeme.project.version='8.1.25-apache-bullseye' \
@@ -8,8 +21,7 @@ LABEL   com.bmeme.project.family='PHP Docker Image' \
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
-    TIMEZONE=Europe/Rome \
-	ANSIBLE_CORE_VERSION=2.15.6
+    TIMEZONE=Europe/Rome
 
 # PHP extensions variables
 ENV IGBINARY_VERSION=3.2.14 \
@@ -47,6 +59,11 @@ ENV PERSISTENT_PROGRAMS \
 
 # install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+# install Ansible
+COPY --from=ansible /usr/lib/python3.9/lib-dynload /usr/lib/python3.9/lib-dynload
+COPY --from=ansible /usr/local/lib/python3.9/dist-packages /usr/local/lib/python3.9/dist-packages
+COPY --from=ansible /usr/local/bin/ansible* /usr/local/bin/
 
 # install the PHP extensions we need
 RUN set -eux; \
@@ -109,6 +126,7 @@ RUN set -eux; \
 		# sockets \
 		zip \
 	; \
+	\
     # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual ${savedAptMark}; \
@@ -125,12 +143,7 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
     # remove php source
-    docker-php-source delete; \
-	\
-	# install ansible
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
-    python3 get-pip.py; \
-    pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
+    docker-php-source delete
 
 RUN set -eux; \
 	# set localtime and timezone
