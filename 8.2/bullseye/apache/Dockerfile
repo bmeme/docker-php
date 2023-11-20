@@ -1,27 +1,15 @@
 FROM composer:2.6.5 as composer
-FROM php:8.2.12-apache-bullseye as ansible
-
-ENV ANSIBLE_CORE_VERSION 2.15
-
-RUN set -eux; \
-	# install python 
-	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils; \
-    \
-	# install ansible
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
-    python3 get-pip.py; \
-    pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
-
 FROM php:8.2.12-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
         com.bmeme.project.version='8.2.12-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.refreshedat='2023-11-18'
+        com.bmeme.refreshedat='2023-11-20'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
-    TIMEZONE=Europe/Rome
+    TIMEZONE=Europe/Rome \
+	ANSIBLE_CORE_VERSION=2.15.6
 
 # PHP extensions variables
 ENV IGBINARY_VERSION=3.2.14 \
@@ -59,11 +47,6 @@ ENV PERSISTENT_PROGRAMS \
 
 # install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-
-# install Ansible
-COPY --from=ansible /usr/lib/python3.9/lib-dynload /usr/lib/python3.9/lib-dynload
-COPY --from=ansible /usr/local/lib/python3.9/dist-packages /usr/local/lib/python3.9/dist-packages
-COPY --from=ansible /usr/local/bin/ansible* /usr/local/bin/
 
 # install the PHP extensions we need
 RUN set -eux; \
@@ -143,7 +126,12 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
     # remove php source
-    docker-php-source delete
+    docker-php-source delete; \
+	\
+	# install ansible
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
+    python3 get-pip.py; \
+    pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
 
 RUN set -eux; \
 	# set localtime and timezone
