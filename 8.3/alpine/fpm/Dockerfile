@@ -1,7 +1,7 @@
 FROM composer:2.7.2 as composer
-FROM php:8.2.17-fpm-alpine3.19
+FROM php:8.3.4-fpm-alpine3.19
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.2.17-fpm-alpine' \
+        com.bmeme.project.version='8.3.4-fpm-alpine' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
         com.bmeme.refreshedat='2024-03-26'

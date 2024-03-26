@@ -1,7 +1,7 @@
-FROM composer:2.6.5 as composer
-FROM php:8.1.25-apache-bullseye as ansible
+FROM composer:2.7.2 as composer
+FROM php:8.1.27-apache-bullseye as ansible
 
-ENV ANSIBLE_CORE_VERSION 2.15.6
+ENV ANSIBLE_CORE_VERSION 2.15.10
 
 RUN set -eux; \
 	# install python 
@@ -14,20 +14,20 @@ RUN set -eux; \
 
 FROM php:8.1.25-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.1.25-apache-bullseye' \
+        com.bmeme.project.version='8.1.27-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.refreshedat='2023-11-20'
+        com.bmeme.refreshedat='2024-03-26'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
     TIMEZONE=Europe/Rome
 
 # PHP extensions variables
-ENV IGBINARY_VERSION=3.2.14 \
-    MCRYPT_VERSION=1.0.6 \
+ENV IGBINARY_VERSION=3.2.15 \
+    MCRYPT_VERSION=1.0.7 \
     OAUTH_VERSION=2.0.7 \
-    REDIS_VERSION=6.0.1
+    REDIS_VERSION=6.0.2
 
 # PHP environment variables
 ENV PHP_MEMORY_LIMIT=512M \

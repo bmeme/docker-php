@@ -1,7 +1,20 @@
 FROM composer:2.7.2 as composer
-FROM php:8.2.17-fpm-alpine3.19
+FROM php:8.3.4-apache-bookworm as ansible
+
+ENV ANSIBLE_CORE_VERSION 2.16.5
+
+RUN set -eux; \
+	# install python 
+	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils; \
+    \
+	# install ansible
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
+    python3 get-pip.py --break-system-packages; \
+    pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages
+
+FROM php:8.3.4-apache-bookworm
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.2.17-fpm-alpine' \
+        com.bmeme.project.version='8.3.4-apache-bookworm' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
         com.bmeme.refreshedat='2024-03-26'
@@ -23,7 +36,7 @@ ENV PHP_MEMORY_LIMIT=512M \
     PHP_ERROR_LOG=/tmp/php_errors.log \
     PHP_UPLOAD_MAX_FILESIZE=20M \
     PHP_POST_MAX_SIZE=20M \
-    PHP_SENDMAIL=/usr/sbin/sendmail
+    PHP_SENDMAIL=/usr/local/sendmail
 
 # OPCACHE environment variables
 ENV OPCACHE_ENABLED=1 \
@@ -35,9 +48,10 @@ ENV OPCACHE_ENABLED=1 \
 
 ENV PERSISTENT_PROGRAMS \
     git \
-    mysql-client \
+    default-mysql-client \
     patch \
     python3 \
+    python3-distutils \
     tzdata \
     unzip \
     vim \
@@ -46,35 +60,48 @@ ENV PERSISTENT_PROGRAMS \
 # install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
+# install Ansible
+COPY --from=ansible /usr/lib/python3.11/lib-dynload /usr/lib/python3.11/lib-dynload
+COPY --from=ansible /usr/local/lib/python3.11/dist-packages /usr/local/lib/python3.11/dist-packages
+COPY --from=ansible /usr/local/bin/ansible* /usr/local/bin/
+
 # install the PHP extensions we need
 RUN set -eux; \
-    apk add --no-cache \
-        ${PERSISTENT_PROGRAMS} \
+	\
+	if command -v a2enmod; then \
+		a2enmod rewrite; \
+	fi; \
+	\
+	savedAptMark="$(apt-mark showmanual)"; \
+	\
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
         ${PHPIZE_DEPS} \
-        freetype-dev \
-        libjpeg-turbo-dev \
-        libpng-dev \
-        icu-dev \
+        ${PERSISTENT_PROGRAMS} \
+        libfreetype6-dev \
+        libicu-dev \
+        libjpeg62-turbo-dev \
         libmcrypt-dev \
-        pcre-dev \
+        libpcre3-dev \
+        libpng-dev \
         libpq-dev \
         libzip-dev \
-    ; \
-    \
-    	pecl install \
+	; \
+	\
+	pecl install \
 	    mcrypt-${MCRYPT_VERSION} \
 	    igbinary-${IGBINARY_VERSION} \
 	    oauth-${OAUTH_VERSION} \
 	; \
-    \
-    # See https://github.com/phpredis/phpredis/issues/1176#issuecomment-558787347
+	\
+	# See https://github.com/phpredis/phpredis/issues/1176#issuecomment-558787347
 	pecl bundle --destination=/usr/src/php/ext redis-${REDIS_VERSION}; \
 	\
-    docker-php-ext-configure gd \
-        --with-freetype=/usr \
-        --with-jpeg=/usr \
+	docker-php-ext-configure gd \
+		--with-freetype=/usr \
+		--with-jpeg=/usr \
 	; \
-    docker-php-ext-configure intl; \
+	docker-php-ext-configure intl; \
 	docker-php-ext-configure zip; \
 	docker-php-ext-configure redis \
 	    --enable-redis-igbinary \
@@ -86,6 +113,7 @@ RUN set -eux; \
 	    igbinary \
 	    oauth \
 	; \
+	\
 	docker-php-ext-install -j "$(nproc)" \
 		bcmath \
 		gd \
@@ -99,16 +127,34 @@ RUN set -eux; \
 		zip \
 	; \
 	\
+    # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
+	apt-mark auto '.*' > /dev/null; \
+	apt-mark manual ${savedAptMark}; \
+	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
+		| awk '/=>/ { print $3 }' \
+		| sort -u \
+		# | xargs -r dpkg-query -S \
+		| xargs -r realpath | xargs -r dpkg-query --search \
+		| cut -d: -f1 \
+		| sort -u \
+		| xargs -rt apt-mark manual; \
+	\
+    apt-mark manual ${PERSISTENT_PROGRAMS}; \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	rm -rf /var/lib/apt/lists/*; \
+	\
     # remove php source
-    docker-php-source delete; \
-    apk del pcre-dev ${PHPIZE_DEPS}
+    docker-php-source delete
 
 RUN set -eux; \
 	# set localtime and timezone
-	rm -f /etc/localtime; \
+	rm /etc/localtime; \
 	cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime; \
     echo "${TIMEZONE}" > /etc/timezone; \
     \
+	# configure composer home directory
+    mkdir ${COMPOSER_HOME}; \
+	\
     # set application ini settings
     { \
         echo "date.timezone = ${TIMEZONE}"; \
