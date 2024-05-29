@@ -12,12 +12,12 @@ RUN set -eux; \
     python3 get-pip.py; \
     pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
 
-FROM php:8.2.12-apache-bullseye
+FROM php:8.2.17-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
         com.bmeme.project.version='8.2.17-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.refreshedat='2024-03-26'
+        com.bmeme.refreshedat='2024-05-29'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
