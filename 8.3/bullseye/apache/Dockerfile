@@ -12,7 +12,7 @@ RUN set -eux; \
     python3 get-pip.py \
     pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
 
-FROM php:8.3.9-apache-bookworm
+FROM php:8.3.9-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
         com.bmeme.project.version='8.3.9-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
