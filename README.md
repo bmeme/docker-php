@@ -35,6 +35,7 @@ development purposes, particularly suitable for Drupal or Symfony environments.
 
 ## Supported tags and respective `Dockerfile` links
 - `8.3.9-apache-bookworm`, `8.3-apache-bookworm`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/bookworm/apache/Dockerfile)
+- `8.3.9-apache-bullseye`, `8.3-apache-bullseye`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/bullseye/apache/Dockerfile)
 - `8.3.9-fpm-alpine`, `8.3-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
 - `8.2.21-apache-bullseye`, `8.2-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/bullseye/apache/Dockerfile)
 - `8.2.21-fpm-alpine`, `8.2-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
