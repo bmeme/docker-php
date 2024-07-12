@@ -10,6 +10,7 @@ development purposes, particularly suitable for Drupal or Symfony environments.
 ## What is contained in the images
 * PHP, of course
 * Some useful executables like:
+  * `gnupg`
   * `git`
   * `patch`
   * `mysql-client`
@@ -33,12 +34,12 @@ development purposes, particularly suitable for Drupal or Symfony environments.
 * Ansible (used in Bmeme for all automation tasks, @see [here](https://github.com/bmeme/ansible-role-drupal), for example)
 
 ## Supported tags and respective `Dockerfile` links
-- `8.3.4-apache-bookworm`, `8.3-apache-bookworm`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/bookworm/apache/Dockerfile)
-- `8.3.4-fpm-alpine`, `8.3-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
-- `8.2.17-apache-bullseye`, `8.2-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/bullseye/apache/Dockerfile)
-- `8.2.17-fpm-alpine`, `8.2-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
-- `8.1.27-apache-bullseye`, `8.1-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bullseye/apache/Dockerfile)
-- `8.1.27-fpm-alpine`, `8.1-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
+- `8.3.9-apache-bookworm`, `8.3-apache-bookworm`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/bookworm/apache/Dockerfile)
+- `8.3.9-fpm-alpine`, `8.3-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
+- `8.2.21-apache-bullseye`, `8.2-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/bullseye/apache/Dockerfile)
+- `8.2.21-fpm-alpine`, `8.2-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
+- `8.1.29-apache-bullseye`, `8.1-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bullseye/apache/Dockerfile)
+- `8.1.29-fpm-alpine`, `8.1-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
 
 ## Existent tags not more supported
 - `8.1.14-apache-buster`, `8.1-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/buster/apache/Dockerfile)
