@@ -1,5 +1,5 @@
-FROM composer:2.7.2 as composer
-FROM php:8.2.17-apache-bullseye as ansible
+FROM composer:2.7.7 as composer
+FROM php:8.2.21-apache-bullseye as ansible
 
 ENV ANSIBLE_CORE_VERSION 2.15.10
 
@@ -12,12 +12,12 @@ RUN set -eux; \
     python3 get-pip.py; \
     pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
 
-FROM php:8.2.17-apache-bullseye
+FROM php:8.2.21-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.2.17-apache-bullseye' \
+        com.bmeme.project.version='8.2.21-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.refreshedat='2024-05-29'
+        com.bmeme.refreshedat='2024-07-12'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
@@ -47,6 +47,7 @@ ENV OPCACHE_ENABLED=1 \
     OPCACHE_FAST_SHUTDOWN=1
 
 ENV PERSISTENT_PROGRAMS \
+	gnupg \
     git \
     default-mysql-client \
     patch \

@@ -1,10 +1,10 @@
-FROM composer:2.7.2 as composer
-FROM php:8.3.4-fpm-alpine3.19
+FROM composer:2.7.7 as composer
+FROM php:8.3.9-fpm-alpine3.20
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.3.4-fpm-alpine' \
+        com.bmeme.project.version='8.3.9-fpm-alpine' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.refreshedat='2024-03-26'
+        com.bmeme.refreshedat='2024-07-12'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
@@ -34,6 +34,7 @@ ENV OPCACHE_ENABLED=1 \
     OPCACHE_FAST_SHUTDOWN=1
 
 ENV PERSISTENT_PROGRAMS \
+    gnupg \
     git \
     mysql-client \
     patch \
