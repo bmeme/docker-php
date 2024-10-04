@@ -41,36 +41,32 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build images
-        id: build
-        env:
-          DOCKERFILE: ${{ matrix.php_pretty_version }}/${{ matrix.os_version }}/${{ matrix.php_type }}/Dockerfile
-          PRETTY_TAG: ${{ matrix.php_pretty_version }}-${{ matrix.php_type }}-${{ matrix.os_version }}
-          MAIN_TAG: ${{ matrix.name }}
-        run: |
-          {
-            docker build \
-              -t ${{ env.registry }}/${{ env.repository }}:${MAIN_TAG} \
-              -t ${{ env.registry }}/${{ env.repository }}:${PRETTY_TAG} \
-              -f ${DOCKERFILE} .; \
-            
-            if ${{ matrix.latest }}; then
-              docker build -t ${{ env.registry }}/${{ env.repository }}:latest \
-                 -f ${DOCKERFILE} .; \
-            fi
-          }
-      - 
-        name: Push images to Docker Hub
-        id: push
-        env:
-          DOCKERFILE: ${{ matrix.php_pretty_version }}/${{ matrix.os_version }}/${{ matrix.php_type }}/Dockerfile
-          PRETTY_TAG: ${{ matrix.php_pretty_version }}-${{ matrix.php_type }}-${{ matrix.os_version }}
-          MAIN_TAG: ${{ matrix.name }}
-        run: |
-          {
-            docker push ${{ env.registry }}/${{ env.repository }}:${MAIN_TAG}; \
-            docker push ${{ env.registry }}/${{ env.repository }}:${PRETTY_TAG}; \
-            if ${{ matrix.latest }}; then
-              docker push ${{ env.registry }}/${{ env.repository }}:latest;
-            fi
-          }
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Build images with base tags
+        id: build-base
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.php_pretty_version }}/${{ matrix.os_version }}/${{ matrix.php_type }}/Dockerfile
+          push: true
+          platforms: "linux/amd64, linux/arm64"
+          tags: |
+            ${{ env.registry }}/${{ env.repository }}:${{ matrix.name }}
+            ${{ env.registry }}/${{ env.repository }}:${{ matrix.php_pretty_version }}-${{ matrix.php_type }}-${{ matrix.os_version }}
+      -
+        name: Build latest image
+        id: build-latest
+        if: ${{ matrix.latest }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.php_pretty_version }}/${{ matrix.os_version }}/${{ matrix.php_type }}/Dockerfile
+          push: true
+          platforms: "linux/amd64, linux/arm64"
+          tags: |
+            ${{ env.registry }}/${{ env.repository }}:latest

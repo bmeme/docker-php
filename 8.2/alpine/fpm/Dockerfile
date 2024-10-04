@@ -1,17 +1,17 @@
-FROM composer:2.7.7 as composer
-FROM php:8.2.21-fpm-alpine3.20
+FROM composer:2.8.0 as composer
+FROM php:8.2.24-fpm-alpine3.20
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.2.21-fpm-alpine' \
+        com.bmeme.project.version='8.2.24-fpm-alpine' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.refreshedat='2024-07-12'
+        com.bmeme.refreshedat='2024-10-04'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
     TIMEZONE=Europe/Rome
 
 # PHP extensions variables
-ENV IGBINARY_VERSION=3.2.15 \
+ENV IGBINARY_VERSION=3.2.16 \
     MCRYPT_VERSION=1.0.7 \
     OAUTH_VERSION=2.0.7 \
     REDIS_VERSION=6.0.2
