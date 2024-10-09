@@ -1,23 +1,21 @@
-FROM composer:2.7.7 as composer
-FROM php:8.3.9-apache-bookworm as ansible
+FROM composer:2.8.0 as composer
+FROM php:8.3.12-apache-bookworm as ansible
 
-ENV ANSIBLE_CORE_VERSION 2.16.5
+ENV ANSIBLE_CORE_VERSION 2.17.4
 
 RUN set -eux; \
 	# install python 
-	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils; \
+	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
     \
 	# install ansible
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
-    python3 get-pip.py --break-system-packages; \
     pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages
 
-FROM php:8.3.9-apache-bookworm
+FROM php:8.3.12-apache-bookworm
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.3.9-apache-bookworm' \
+        com.bmeme.project.version='8.3.12-apache-bookworm' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.refreshedat='2024-07-12'
+        com.bmeme.refreshedat='2024-10-04'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
@@ -134,7 +132,6 @@ RUN set -eux; \
 	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
 		| awk '/=>/ { print $3 }' \
 		| sort -u \
-		# | xargs -r dpkg-query -S \
 		| xargs -r realpath | xargs -r dpkg-query --search \
 		| cut -d: -f1 \
 		| sort -u \

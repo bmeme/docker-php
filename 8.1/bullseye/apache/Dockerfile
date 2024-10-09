@@ -1,23 +1,21 @@
-FROM composer:2.7.7 as composer
-FROM php:8.1.29-apache-bullseye as ansible
+FROM composer:2.8.0 as composer
+FROM php:8.1.30-apache-bullseye as ansible
 
 ENV ANSIBLE_CORE_VERSION 2.15.10
 
 RUN set -eux; \
 	# install python 
-	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils; \
+	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
     \
 	# install ansible
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
-    python3 get-pip.py; \
     pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
 
-FROM php:8.1.25-apache-bullseye
+FROM php:8.1.30-apache-bullseye
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.1.29-apache-bullseye' \
+        com.bmeme.project.version='8.1.30-apache-bullseye' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-        com.bmeme.refreshedat='2024-07-12'
+        com.bmeme.refreshedat='2024-10-04'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \

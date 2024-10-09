@@ -2,49 +2,56 @@
   "include": 
   [
     {
-      "name": "8.3.9-apache-bookworm",
+      "name": "8.3.12-apache-bookworm",
       "php_pretty_version": "8.3",
       "os_version": "bookworm",
       "php_type": "apache",
       "latest": true
     },
     {
-      "name": "8.3.9-apache-bullseye",
+      "name": "8.3.12-apache-bullseye",
       "php_pretty_version": "8.3",
       "os_version": "bullseye",
       "php_type": "apache",
-      "latest": true
+      "latest": false
     },
     {
-      "name": "8.3.9-fpm-alpine",
+      "name": "8.3.12-fpm-alpine",
       "php_pretty_version": "8.3",
       "os_version": "alpine",
       "php_type": "fpm",
       "latest": false
     },
     {
-      "name": "8.2.21-apache-bullseye",
+      "name": "8.2.24-apache-bookworm",
+      "php_pretty_version": "8.2",
+      "os_version": "bookworm",
+      "php_type": "apache",
+      "latest": false
+    },
+    {
+      "name": "8.2.24-apache-bullseye",
       "php_pretty_version": "8.2",
       "os_version": "bullseye",
       "php_type": "apache",
       "latest": false
     },
     {
-      "name": "8.2.21-fpm-alpine",
+      "name": "8.2.24-fpm-alpine",
       "php_pretty_version": "8.2",
       "os_version": "alpine",
       "php_type": "fpm",
       "latest": false
     },
     {
-      "name": "8.1.29-apache-bullseye",
+      "name": "8.1.30-apache-bullseye",
       "php_pretty_version": "8.1",
       "os_version": "bullseye",
       "php_type": "apache",
       "latest": false
     },
     {
-      "name": "8.1.29-fpm-alpine",
+      "name": "8.1.30-fpm-alpine",
       "php_pretty_version": "8.1",
       "os_version": "alpine",
       "php_type": "fpm",

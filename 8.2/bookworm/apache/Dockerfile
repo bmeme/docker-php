@@ -1,18 +1,18 @@
 FROM composer:2.8.0 as composer
-FROM php:8.3.12-apache-bullseye as ansible
+FROM php:8.2.24-apache-bookworm as ansible
 
-ENV ANSIBLE_CORE_VERSION 2.15.12
+ENV ANSIBLE_CORE_VERSION 2.17.4
 
 RUN set -eux; \
 	# install python 
 	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
     \
 	# install ansible
-    pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
+    pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages
 
-FROM php:8.3.12-apache-bullseye
+FROM php:8.2.24-apache-bookworm
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-        com.bmeme.project.version='8.3.12-apache-bullseye' \
+        com.bmeme.project.version='8.2.24-apache-bookworm' \
         com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
         com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
         com.bmeme.refreshedat='2024-10-04'
@@ -22,7 +22,7 @@ ENV COMPOSER_HOME=/var/www/.composer \
     TIMEZONE=Europe/Rome
 
 # PHP extensions variables
-ENV IGBINARY_VERSION=3.2.15 \
+ENV IGBINARY_VERSION=3.2.16 \
     MCRYPT_VERSION=1.0.7 \
     OAUTH_VERSION=2.0.7 \
     REDIS_VERSION=6.0.2
@@ -60,8 +60,8 @@ ENV PERSISTENT_PROGRAMS \
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 # install Ansible
-COPY --from=ansible /usr/lib/python3.9/lib-dynload /usr/lib/python3.9/lib-dynload
-COPY --from=ansible /usr/local/lib/python3.9/dist-packages /usr/local/lib/python3.9/dist-packages
+COPY --from=ansible /usr/lib/python3.11/lib-dynload /usr/lib/python3.11/lib-dynload
+COPY --from=ansible /usr/local/lib/python3.11/dist-packages /usr/local/lib/python3.11/dist-packages
 COPY --from=ansible /usr/local/bin/ansible* /usr/local/bin/
 
 # install the PHP extensions we need
@@ -132,7 +132,6 @@ RUN set -eux; \
 	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
 		| awk '/=>/ { print $3 }' \
 		| sort -u \
-		# | xargs -r dpkg-query -S \
 		| xargs -r realpath | xargs -r dpkg-query --search \
 		| cut -d: -f1 \
 		| sort -u \
