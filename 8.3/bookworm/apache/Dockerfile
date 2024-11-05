@@ -85,6 +85,7 @@ RUN set -eux; \
         libpng-dev \
         libpq-dev \
         libzip-dev \
+		libwebp-dev \
 	; \
 	\
 	pecl install \
@@ -99,6 +100,7 @@ RUN set -eux; \
 	docker-php-ext-configure gd \
 		--with-freetype=/usr \
 		--with-jpeg=/usr \
+		--with-webp=/usr \
 	; \
 	docker-php-ext-configure intl; \
 	docker-php-ext-configure zip; \
