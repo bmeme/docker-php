@@ -1,22 +1,31 @@
-FROM php:8.0.30-apache-bullseye
+FROM composer:2.9.2 AS composer
+FROM php:8.1.33-apache-bookworm AS ansible
+
+ENV ANSIBLE_CORE_VERSION 2.17.14
+
+RUN set -eux; \
+	# install python 
+	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
+	\
+	# install ansible
+	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages
+
+FROM php:8.1.33-apache-bookworm
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-	com.bmeme.project.version='8.0.30-apache-bullseye' \
+	com.bmeme.project.version='8.1.33-apache-bookworm' \
 	com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
 	com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-	com.bmeme.refreshedat='2023-10-14'
+	com.bmeme.refreshedat='2025-12-02'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
-	# @see https://getcomposer.org/download/
-	COMPOSER_VERSION='2.6.5' \
-	TIMEZONE=Europe/Rome \
-	ANSIBLE_VERSION=8.5.0
+	TIMEZONE=Europe/Rome
 
 # PHP extensions variables
-ENV IGBINARY_VERSION=3.2.14 \
-	MCRYPT_VERSION=1.0.6 \
-	OAUTH_VERSION=2.0.7 \
-	REDIS_VERSION=6.0.1
+ENV IGBINARY_VERSION=3.2.16 \
+	MCRYPT_VERSION=1.0.9 \
+	OAUTH_VERSION=2.0.10 \
+	REDIS_VERSION=6.3.0
 
 # PHP environment variables
 ENV PHP_MEMORY_LIMIT=512M \
@@ -36,6 +45,7 @@ ENV OPCACHE_ENABLED=1 \
 	OPCACHE_FAST_SHUTDOWN=1
 
 ENV PERSISTENT_PROGRAMS="\
+	gnupg \
 	git \
 	default-mysql-client \
 	patch \
@@ -45,6 +55,14 @@ ENV PERSISTENT_PROGRAMS="\
 	unzip \
 	vim \
 	zip"
+
+# install Composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+# install Ansible
+COPY --from=ansible /usr/lib/python3.11/lib-dynload /usr/lib/python3.11/lib-dynload
+COPY --from=ansible /usr/local/lib/python3.11/dist-packages /usr/local/lib/python3.11/dist-packages
+COPY --from=ansible /usr/local/bin/ansible* /usr/local/bin/
 
 # install the PHP extensions we need
 RUN set -eux; \
@@ -67,6 +85,7 @@ RUN set -eux; \
 	libpng-dev \
 	libpq-dev \
 	libzip-dev \
+	libwebp-dev \
 	; \
 	\
 	pecl install \
@@ -81,6 +100,7 @@ RUN set -eux; \
 	docker-php-ext-configure gd \
 	--with-freetype=/usr \
 	--with-jpeg=/usr \
+	--with-webp=/usr \
 	; \
 	docker-php-ext-configure intl; \
 	docker-php-ext-configure zip; \
@@ -103,18 +123,11 @@ RUN set -eux; \
 	pdo_mysql \
 	pdo_pgsql \
 	redis \
-	sockets \
+	# due to error: invalid application of 'sizeof' to incomplete type 'struct cmsgcred'
+	# sockets \
 	zip \
 	; \
 	\
-	# install composer
-	mkdir ${COMPOSER_HOME}; \
-	curl -k -sS https://getcomposer.org/installer \
-	| php -- --install-dir=/usr/local/bin --version=${COMPOSER_VERSION} --filename=composer; \
-	# install ansible
-	curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
-	python3 get-pip.py; \
-	pip install --no-cache-dir ansible==${ANSIBLE_VERSION}; \
 	# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual ${savedAptMark}; \
@@ -138,6 +151,9 @@ RUN set -eux; \
 	rm /etc/localtime; \
 	cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime; \
 	echo "${TIMEZONE}" > /etc/timezone; \
+	\
+	# configure composer home directory
+	mkdir ${COMPOSER_HOME}; \
 	\
 	# set application ini settings
 	{ \
