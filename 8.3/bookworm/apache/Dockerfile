@@ -1,5 +1,5 @@
-FROM composer:2.9.2 as composer
-FROM php:8.3.28-apache-bookworm as ansible
+FROM composer:2.9.2 AS composer
+FROM php:8.3.28-apache-bookworm AS ansible
 
 ENV ANSIBLE_CORE_VERSION 2.17.14
 
@@ -44,7 +44,7 @@ ENV OPCACHE_ENABLED=1 \
 	OPCACHE_REVALIDATE_FREQ=60 \
 	OPCACHE_FAST_SHUTDOWN=1
 
-ENV PERSISTENT_PROGRAMS \
+ENV PERSISTENT_PROGRAMS="\
 	gnupg \
 	git \
 	default-mysql-client \
@@ -54,7 +54,7 @@ ENV PERSISTENT_PROGRAMS \
 	tzdata \
 	unzip \
 	vim \
-	zip
+	zip"
 
 # install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer

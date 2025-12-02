@@ -1,5 +1,5 @@
-FROM composer:2.9.2 as composer
-FROM php:8.1.33-apache-bookworm as ansible
+FROM composer:2.9.2 AS composer
+FROM php:8.1.33-apache-bookworm AS ansible
 
 ENV ANSIBLE_CORE_VERSION 2.17.14
 
@@ -8,7 +8,7 @@ RUN set -eux; \
 	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
 	\
 	# install ansible
-	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
+	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages
 
 FROM php:8.1.33-apache-bookworm
 LABEL   com.bmeme.project.family='PHP Docker Image' \
@@ -44,7 +44,7 @@ ENV OPCACHE_ENABLED=1 \
 	OPCACHE_REVALIDATE_FREQ=60 \
 	OPCACHE_FAST_SHUTDOWN=1
 
-ENV PERSISTENT_PROGRAMS \
+ENV PERSISTENT_PROGRAMS="\
 	gnupg \
 	git \
 	default-mysql-client \
@@ -54,7 +54,7 @@ ENV PERSISTENT_PROGRAMS \
 	tzdata \
 	unzip \
 	vim \
-	zip
+	zip"
 
 # install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer

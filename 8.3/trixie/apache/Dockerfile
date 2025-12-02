@@ -1,11 +1,11 @@
-FROM composer:2.9.2 as composer
-FROM php:8.3.28-apache-trixie as ansible
+FROM composer:2.9.2 AS composer
+FROM php:8.3.28-apache-trixie AS ansible
 
 ENV ANSIBLE_CORE_VERSION 2.19.4
 
 RUN set -eux; \
 	# install python 
-	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
+	apt-get update && apt-get install -y --no-install-recommends python3 python3-pip; \
 	\
 	# install ansible
 	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages
@@ -44,17 +44,16 @@ ENV OPCACHE_ENABLED=1 \
 	OPCACHE_REVALIDATE_FREQ=60 \
 	OPCACHE_FAST_SHUTDOWN=1
 
-ENV PERSISTENT_PROGRAMS \
+ENV PERSISTENT_PROGRAMS="\
 	gnupg \
 	git \
 	default-mysql-client \
 	patch \
 	python3 \
-	python3-distutils \
 	tzdata \
 	unzip \
 	vim \
-	zip
+	zip"
 
 # install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
@@ -81,7 +80,7 @@ RUN set -eux; \
 	libicu-dev \
 	libjpeg62-turbo-dev \
 	libmcrypt-dev \
-	libpcre3-dev \
+	libpcre2-dev \
 	libpng-dev \
 	libpq-dev \
 	libzip-dev \

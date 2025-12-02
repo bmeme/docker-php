@@ -1,4 +1,4 @@
-FROM composer:2.8.0 as composer
+FROM composer:2.8.0 AS composer
 FROM php:8.3.28-fpm-alpine3.21
 LABEL   com.bmeme.project.family='PHP Docker Image' \
     com.bmeme.project.version='8.3.28-fpm-alpine' \
@@ -33,7 +33,7 @@ ENV OPCACHE_ENABLED=1 \
     OPCACHE_REVALIDATE_FREQ=60 \
     OPCACHE_FAST_SHUTDOWN=1
 
-ENV PERSISTENT_PROGRAMS \
+ENV PERSISTENT_PROGRAMS="\
     gnupg \
     git \
     mysql-client \
@@ -42,7 +42,7 @@ ENV PERSISTENT_PROGRAMS \
     tzdata \
     unzip \
     vim \
-    zip
+    zip"
 
 # install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
