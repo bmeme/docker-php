@@ -1,18 +1,18 @@
 FROM composer:2.9.2 as composer
-FROM php:8.2.29-apache-bookworm as ansible
+FROM php:8.1.33-apache-trixie as ansible
 
-ENV ANSIBLE_CORE_VERSION 2.17.14
+ENV ANSIBLE_CORE_VERSION 2.19.4
 
 RUN set -eux; \
 	# install python 
 	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
 	\
 	# install ansible
-	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages
+	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
 
-FROM php:8.2.29-apache-bookworm
+FROM php:8.1.33-apache-trixie
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-	com.bmeme.project.version='8.2.29-apache-bookworm' \
+	com.bmeme.project.version='8.1.33-apache-trixie' \
 	com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
 	com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
 	com.bmeme.refreshedat='2025-12-02'
@@ -60,8 +60,8 @@ ENV PERSISTENT_PROGRAMS \
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 # install Ansible
-COPY --from=ansible /usr/lib/python3.11/lib-dynload /usr/lib/python3.11/lib-dynload
-COPY --from=ansible /usr/local/lib/python3.11/dist-packages /usr/local/lib/python3.11/dist-packages
+COPY --from=ansible /usr/lib/python3.13/lib-dynload /usr/lib/python3.13/lib-dynload
+COPY --from=ansible /usr/local/lib/python3.13/dist-packages /usr/local/lib/python3.13/dist-packages
 COPY --from=ansible /usr/local/bin/ansible* /usr/local/bin/
 
 # install the PHP extensions we need
@@ -134,7 +134,7 @@ RUN set -eux; \
 	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
 	| awk '/=>/ { print $3 }' \
 	| sort -u \
-	| xargs -r realpath | xargs -r dpkg-query --search \
+	| xargs -r dpkg-query -S \
 	| cut -d: -f1 \
 	| sort -u \
 	| xargs -rt apt-mark manual; \

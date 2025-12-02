@@ -1,5 +1,5 @@
 FROM composer:2.9.2 as composer
-FROM php:8.2.29-apache-bookworm as ansible
+FROM php:8.1.33-apache-bookworm as ansible
 
 ENV ANSIBLE_CORE_VERSION 2.17.14
 
@@ -8,11 +8,11 @@ RUN set -eux; \
 	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
 	\
 	# install ansible
-	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages
+	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION}
 
-FROM php:8.2.29-apache-bookworm
+FROM php:8.1.33-apache-bookworm
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-	com.bmeme.project.version='8.2.29-apache-bookworm' \
+	com.bmeme.project.version='8.1.33-apache-bookworm' \
 	com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
 	com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
 	com.bmeme.refreshedat='2025-12-02'
@@ -134,7 +134,7 @@ RUN set -eux; \
 	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
 	| awk '/=>/ { print $3 }' \
 	| sort -u \
-	| xargs -r realpath | xargs -r dpkg-query --search \
+	| xargs -r dpkg-query -S \
 	| cut -d: -f1 \
 	| sort -u \
 	| xargs -rt apt-mark manual; \
