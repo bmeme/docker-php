@@ -1,10 +1,13 @@
+ARG PHP_VERSION=8.1.34
+
 FROM composer:2.9.2 AS composer
-FROM php:8.1.33-fpm-alpine3.21
-LABEL   com.bmeme.project.family='PHP Docker Image' \
-    com.bmeme.project.version='8.1.33-fpm-alpine' \
+FROM php:${PHP_VERSION}-fpm-alpine3.22
+
+LABEL com.bmeme.project.family='PHP Docker Image' \
+    com.bmeme.project.version="${PHP_VERSION}-fpm-alpine" \
     com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
     com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-    com.bmeme.refreshedat='2025-12-02'
+    com.bmeme.refreshedat='2025-12-22'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
@@ -44,24 +47,39 @@ ENV PERSISTENT_PROGRAMS="\
     vim \
     zip"
 
+WORKDIR /var/www/html
+
 # install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+# install the entrypoint script for env generation
+COPY scripts/docker-php-entrypoint-env.sh /usr/local/bin/docker-php-entrypoint-env.sh
 
 # install the PHP extensions we need
-RUN set -eux; \
+RUN --mount=type=cache,target=/tmp/pear,sharing=locked --mount=type=cache,target=/root/.cache/composer set -eux; \
     apk add --no-cache \
     ${PERSISTENT_PROGRAMS} \
+    freetype \
+    libjpeg-turbo \
+    libpng \
+    icu-libs \
+    libmcrypt \
+    pcre2 \
+    libpq \
+    libzip \
+    libwebp \
+    ; \
+    apk add --no-cache --virtual .build-deps \
     ${PHPIZE_DEPS} \
     freetype-dev \
     libjpeg-turbo-dev \
     libpng-dev \
     icu-dev \
     libmcrypt-dev \
-    pcre-dev \
+    pcre2-dev \
     libpq-dev \
     libzip-dev \
     libwebp-dev \
-    ; \    
+    ; \
     \
     pecl install \
     mcrypt-${MCRYPT_VERSION} \
@@ -82,7 +100,7 @@ RUN set -eux; \
     docker-php-ext-configure redis \
     --enable-redis-igbinary \
     --enable-redis-lzf \
-    ;\
+    ; \
     \
     docker-php-ext-enable \
     mcrypt \
@@ -102,41 +120,23 @@ RUN set -eux; \
     zip \
     ; \
     \
-    # remove php source
     docker-php-source delete; \
-    apk del pcre-dev ${PHPIZE_DEPS}
+    apk del .build-deps
 
 RUN set -eux; \
     # set localtime and timezone
-    rm -f /etc/localtime; \
-    cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime; \
+    ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime; \
     echo "${TIMEZONE}" > /etc/timezone; \
     \
+    # make the entrypoint script executable
+    chmod +x /usr/local/bin/docker-php-entrypoint-env.sh; \
+    \
     # configure composer home directory
-    mkdir ${COMPOSER_HOME}; \
-    \
-    # set application ini settings
-    { \
-    echo "date.timezone = ${TIMEZONE}"; \
-    echo "error_log = ${PHP_ERROR_LOG}"; \
-    echo "log_errors = ${PHP_LOG_ENABLED}"; \
-    echo "max_execution_time = ${PHP_MAX_EXECUTION_TIME}"; \
-    echo "memory_limit = ${PHP_MEMORY_LIMIT}"; \
-    echo "post_max_size = ${PHP_POST_MAX_SIZE}"; \
-    echo "sendmail_path = ${PHP_SENDMAIL}"; \
-    echo "upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}"; \
-    } > /usr/local/etc/php/conf.d/application.ini; \
-    \
-    # set opcache ini settings
-    # see https://secure.php.net/manual/en/opcache.installation.php
-    { \
-    echo "opcache.enable = ${OPCACHE_ENABLED}"; \
-    echo "opcache.memory_consumption = ${OPCACHE_MEMORY_CONSUMPTION}"; \
-    echo "opcache.interned_strings_buffer = ${OPCACHE_INTERNED_STRINGS_BUFFER}"; \
-    echo "opcache.max_accelerated_files = ${OPCACHE_MAX_ACCELERATED_FILES}"; \
-    echo "opcache.revalidate_freq = ${OPCACHE_REVALIDATE_FREQ}"; \
-    echo "opcache.fast_shutdown = ${OPCACHE_FAST_SHUTDOWN}"; \
-    } > /usr/local/etc/php/conf.d/opcache.ini; \
+    mkdir -p ${COMPOSER_HOME}; \
+    chown -R www-data:www-data ${COMPOSER_HOME}; \
     \
     # inject index.php
     echo "<?php phpinfo();" > /var/www/html/index.php
+
+ENTRYPOINT ["docker-php-entrypoint-env.sh"]
+CMD ["php-fpm"]

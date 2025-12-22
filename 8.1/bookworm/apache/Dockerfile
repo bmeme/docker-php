@@ -1,21 +1,28 @@
+ARG PHP_VERSION=8.1.34
+
 FROM composer:2.9.2 AS composer
-FROM php:8.1.33-apache-bookworm AS ansible
+FROM php:${PHP_VERSION}-apache-bookworm AS ansible
 
-ENV ANSIBLE_CORE_VERSION 2.17.14
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ANSIBLE_CORE_VERSION=2.17.14
 
-RUN set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/root/.cache/pip set -eux; \
 	# install python 
 	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
 	\
 	# install ansible
-	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages
+	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages; \
+	\
+	rm -rf /var/lib/apt/lists/*
 
-FROM php:8.1.33-apache-bookworm
+FROM php:${PHP_VERSION}-apache-bookworm
+ARG PHP_VERSION
+ENV DEBIAN_FRONTEND=noninteractive
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-	com.bmeme.project.version='8.1.33-apache-bookworm' \
+	com.bmeme.project.version="${PHP_VERSION}-apache-bookworm" \
 	com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
 	com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-	com.bmeme.refreshedat='2025-12-02'
+	com.bmeme.refreshedat='2025-12-22'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
@@ -54,7 +61,11 @@ ENV PERSISTENT_PROGRAMS="\
 	tzdata \
 	unzip \
 	vim \
-	zip"
+	zip \
+	curl \
+	ca-certificates"
+
+WORKDIR /var/www/html
 
 # install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
@@ -63,9 +74,10 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY --from=ansible /usr/lib/python3.11/lib-dynload /usr/lib/python3.11/lib-dynload
 COPY --from=ansible /usr/local/lib/python3.11/dist-packages /usr/local/lib/python3.11/dist-packages
 COPY --from=ansible /usr/local/bin/ansible* /usr/local/bin/
+COPY scripts/docker-php-entrypoint-env.sh /usr/local/bin/docker-php-entrypoint-env.sh
 
 # install the PHP extensions we need
-RUN set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/tmp/pear --mount=type=cache,target=/root/.cache/composer set -eux; \
 	\
 	if command -v a2enmod; then \
 	a2enmod rewrite; \
@@ -81,7 +93,7 @@ RUN set -eux; \
 	libicu-dev \
 	libjpeg62-turbo-dev \
 	libmcrypt-dev \
-	libpcre3-dev \
+	libpcre2-dev \
 	libpng-dev \
 	libpq-dev \
 	libzip-dev \
@@ -123,8 +135,6 @@ RUN set -eux; \
 	pdo_mysql \
 	pdo_pgsql \
 	redis \
-	# due to error: invalid application of 'sizeof' to incomplete type 'struct cmsgcred'
-	# sockets \
 	zip \
 	; \
 	\
@@ -148,35 +158,17 @@ RUN set -eux; \
 
 RUN set -eux; \
 	# set localtime and timezone
-	rm /etc/localtime; \
-	cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime; \
+	ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime; \
 	echo "${TIMEZONE}" > /etc/timezone; \
 	\
 	# configure composer home directory
-	mkdir ${COMPOSER_HOME}; \
+	mkdir -p "$COMPOSER_HOME" && chown -R www-data:www-data "$COMPOSER_HOME"; \
 	\
-	# set application ini settings
-	{ \
-	echo "date.timezone = ${TIMEZONE}"; \
-	echo "error_log = ${PHP_ERROR_LOG}"; \
-	echo "log_errors = ${PHP_LOG_ENABLED}"; \
-	echo "max_execution_time = ${PHP_MAX_EXECUTION_TIME}"; \
-	echo "memory_limit = ${PHP_MEMORY_LIMIT}"; \
-	echo "post_max_size = ${PHP_POST_MAX_SIZE}"; \
-	echo "sendmail_path = ${PHP_SENDMAIL}"; \
-	echo "upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}"; \
-	} > /usr/local/etc/php/conf.d/application.ini; \
-	\
-	# set opcache ini settings
-	# see https://secure.php.net/manual/en/opcache.installation.php
-	{ \
-	echo "opcache.enable = ${OPCACHE_ENABLED}"; \
-	echo "opcache.memory_consumption = ${OPCACHE_MEMORY_CONSUMPTION}"; \
-	echo "opcache.interned_strings_buffer = ${OPCACHE_INTERNED_STRINGS_BUFFER}"; \
-	echo "opcache.max_accelerated_files = ${OPCACHE_MAX_ACCELERATED_FILES}"; \
-	echo "opcache.revalidate_freq = ${OPCACHE_REVALIDATE_FREQ}"; \
-	echo "opcache.fast_shutdown = ${OPCACHE_FAST_SHUTDOWN}"; \
-	} > /usr/local/etc/php/conf.d/opcache.ini; \
+	# make docker-php-entrypoint-env.sh executable
+	chmod +x /usr/local/bin/docker-php-entrypoint-env.sh; \
 	\
 	# inject index.php
 	echo "<?php phpinfo();" > /var/www/html/index.php
+
+ENTRYPOINT ["docker-php-entrypoint-env.sh"]
+CMD ["apache2-foreground"]

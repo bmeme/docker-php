@@ -2,63 +2,63 @@
   "include": 
   [
       {
-      "name": "8.3.28-apache-trixie",
+      "name": "8.3.29-apache-trixie",
       "php_pretty_version": "8.3",
       "os_version": "trixie",
       "php_type": "apache",
       "latest": true
     },
     {
-      "name": "8.3.28-apache-bookworm",
+      "name": "8.3.29-apache-bookworm",
       "php_pretty_version": "8.3",
       "os_version": "bookworm",
       "php_type": "apache",
       "latest": false
     },
     {
-      "name": "8.3.28-fpm-alpine",
+      "name": "8.3.29-fpm-alpine",
       "php_pretty_version": "8.3",
       "os_version": "alpine",
       "php_type": "fpm",
       "latest": false
     },
     {
-      "name": "8.2.29-apache-trixie",
+      "name": "8.2.30-apache-trixie",
       "php_pretty_version": "8.2",
       "os_version": "trixie",
       "php_type": "apache",
       "latest": false
     },
     {
-      "name": "8.2.29-apache-bookworm",
+      "name": "8.2.30-apache-bookworm",
       "php_pretty_version": "8.2",
       "os_version": "bookworm",
       "php_type": "apache",
       "latest": false
     },
     {
-      "name": "8.2.29-fpm-alpine",
+      "name": "8.2.30-fpm-alpine",
       "php_pretty_version": "8.2",
       "os_version": "alpine",
       "php_type": "fpm",
       "latest": false
     },
     {
-      "name": "8.1.33-apache-trixie",
+      "name": "8.1.34-apache-trixie",
       "php_pretty_version": "8.1",
       "os_version": "trixie",
       "php_type": "apache",
       "latest": false
     },
     {
-      "name": "8.1.33-apache-bookworm",
+      "name": "8.1.34-apache-bookworm",
       "php_pretty_version": "8.1",
       "os_version": "bookworm",
       "php_type": "apache",
       "latest": false
     },
     {
-      "name": "8.1.33-fpm-alpine",
+      "name": "8.1.34-fpm-alpine",
       "php_pretty_version": "8.1",
       "os_version": "alpine",
       "php_type": "fpm",
