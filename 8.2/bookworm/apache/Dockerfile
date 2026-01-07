@@ -22,7 +22,7 @@ LABEL   com.bmeme.project.family='PHP Docker Image' \
 	com.bmeme.project.version="${PHP_VERSION}-apache-bookworm" \
 	com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
 	com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-	com.bmeme.refreshedat='2025-12-22'
+	com.bmeme.refreshedat='2026-01-07'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
@@ -63,7 +63,13 @@ ENV PERSISTENT_PROGRAMS="\
 	vim \
 	zip \
 	curl \
-	ca-certificates"
+	ca-certificates \
+	libpng16-16 \
+	libzip4 \
+	libmcrypt4 \
+	libwebp7 \
+	libjpeg62-turbo \
+	libfreetype6"
 
 WORKDIR /var/www/html
 
@@ -115,16 +121,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
 	--with-webp=/usr \
 	; \
 	docker-php-ext-configure intl; \
-	docker-php-ext-configure zip; \
 	docker-php-ext-configure redis \
 	--enable-redis-igbinary \
 	--enable-redis-lzf \
-	;\
-	\
-	docker-php-ext-enable \
-	mcrypt \
-	igbinary \
-	oauth \
 	; \
 	\
 	docker-php-ext-install -j "$(nproc)" \
@@ -138,11 +137,19 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
 	zip \
 	; \
 	\
+	# Enable extensions explicitly (safer/clearer)
+	docker-php-ext-enable \
+	mcrypt \
+	igbinary \
+	oauth \
+	redis \
+	; \
+	\
 	# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual ${savedAptMark}; \
 	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
-	| awk '/=>/ { print $3 }' \
+	| awk '/=>/ && $3 ~ /^\// { print $3 }' \
 	| sort -u \
 	| xargs -r dpkg-query -S \
 	| cut -d: -f1 \
