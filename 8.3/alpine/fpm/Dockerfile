@@ -1,13 +1,13 @@
-ARG PHP_VERSION=8.3.29
+ARG PHP_VERSION=8.3.32
 
 FROM composer:2.9.2 AS composer
-FROM php:${PHP_VERSION}-fpm-alpine3.23
+FROM php:${PHP_VERSION}-fpm-alpine3.24
 
 LABEL com.bmeme.project.family='PHP Docker Image' \
     com.bmeme.project.version="${PHP_VERSION}-fpm-alpine" \
     com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
     com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-    com.bmeme.refreshedat='2025-12-22'
+    com.bmeme.refreshedat='2026-07-08'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \

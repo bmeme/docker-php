@@ -22,7 +22,7 @@ development purposes, particularly suitable for Drupal or Symfony environments.
   - `gd`
   - `intl`
   - `igbinary`
-  - `mcrypt` only for 8.0 and older
+  - `mcrypt`
   - `oauth`
   - `opcache`
   - `pdo_mysql`
@@ -35,18 +35,24 @@ development purposes, particularly suitable for Drupal or Symfony environments.
 
 ## Supported tags and respective `Dockerfile` links
 
-- `8.3.29-apache-trixie`, `8.3-apache-trixie`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/trixie/apache/Dockerfile)
-- `8.3.29-apache-bookworm`, `8.3-apache-bookworm` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/bookworm/apache/Dockerfile)
-- `8.3.29-fpm-alpine`, `8.3-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
-- `8.2.30-apache-trixie`, `8.2-apache-trixie` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/trixie/apache/Dockerfile)
-- `8.2.30-apache-bookworm`, `8.2-apache-bookworm` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/bookworm/apache/Dockerfile)
-- `8.2.30-fpm-alpine`, `8.2-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
-- `8.1.34-apache-trixie`, `8.1-apache-trixie` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/trixie/apache/Dockerfile)
-- `8.1.34-apache-bookworm`, `8.1-apache-bookworm` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bookworm/apache/Dockerfile)
-- `8.1.30-fpm-alpine`, `8.1-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
+- `8.5.8-apache-trixie`, `8.5-apache-trixie`, `latest` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.5/trixie/apache/Dockerfile)
+- `8.5.8-apache-bookworm`, `8.5-apache-bookworm` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.5/bookworm/apache/Dockerfile)
+- `8.5.8-fpm-alpine`, `8.5-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.5/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
+- `8.4.23-apache-trixie`, `8.4-apache-trixie` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.4/trixie/apache/Dockerfile)
+- `8.4.23-apache-bookworm`, `8.4-apache-bookworm` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.4/bookworm/apache/Dockerfile)
+- `8.4.23-fpm-alpine`, `8.4-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.4/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
+- `8.3.32-apache-trixie`, `8.3-apache-trixie` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/trixie/apache/Dockerfile)
+- `8.3.32-apache-bookworm`, `8.3-apache-bookworm` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/bookworm/apache/Dockerfile)
+- `8.3.32-fpm-alpine`, `8.3-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.3/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
+- `8.2.32-apache-trixie`, `8.2-apache-trixie` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/trixie/apache/Dockerfile)
+- `8.2.32-apache-bookworm`, `8.2-apache-bookworm` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/bookworm/apache/Dockerfile)
+- `8.2.32-fpm-alpine`, `8.2-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.2/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
 
 ## Existent tags not more supported
 
+- `8.1.34-apache-trixie`, `8.1-apache-trixie` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/trixie/apache/Dockerfile)
+- `8.1.34-apache-bookworm`, `8.1-apache-bookworm` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bookworm/apache/Dockerfile)
+- `8.1.34-fpm-alpine`, `8.1-fpm-alpine`, [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/alpine/fpm/Dockerfile) - **EXPERIMENTAL**
 - `8.1.30-apache-bullseye`, `8.1-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/bullseye/apache/Dockerfile)
 - `8.1.14-apache-buster`, `8.1-apache-buster` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.1/buster/apache/Dockerfile)
 - `8.0.30-apache-bullseye`, `8.0-apache-bullseye` [Dockerfile](https://github.com/bmeme/docker-php/blob/main/8.0/bullseye/apache/Dockerfile)

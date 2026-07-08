@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.3.29
+ARG PHP_VERSION=8.3.32
 
 FROM composer:2.9.2 AS composer
 FROM php:${PHP_VERSION}-apache-bookworm AS ansible
@@ -23,7 +23,7 @@ LABEL   com.bmeme.project.family='PHP Docker Image' \
 	com.bmeme.project.version="${PHP_VERSION}-apache-bookworm" \
 	com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
 	com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
-	com.bmeme.refreshedat='2026-01-07'
+	com.bmeme.refreshedat='2026-07-08'
 
 # Variables
 ENV COMPOSER_HOME=/var/www/.composer \
@@ -156,7 +156,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
 	| awk '/=>/ && $3 ~ /^\// { print $3 }' \
 	| sort -u \
-	| xargs -r dpkg-query -S \
+	| xargs -r realpath \
+	| xargs -r dpkg-query --search \
 	| cut -d: -f1 \
 	| sort -u \
 	| xargs -rt apt-mark manual; \

@@ -1,25 +1,26 @@
-ARG PHP_VERSION=8.2.32
+ARG PHP_VERSION=8.5.8
 
 FROM composer:2.9.2 AS composer
-FROM php:${PHP_VERSION}-apache-trixie AS ansible
+FROM php:${PHP_VERSION}-apache-bookworm AS ansible
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV ANSIBLE_CORE_VERSION=2.19.4
+ENV ANSIBLE_CORE_VERSION=2.17.14
 
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/root/.cache/pip set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/root/.cache/pip set -eux; \
 	# install python 
-	apt-get update && apt-get install -y --no-install-recommends python3 python3-pip; \
+	apt-get update && apt-get install -y --no-install-recommends python3 python3-distutils python3-pip; \
 	\
 	# install ansible
 	pip install --no-cache-dir ansible-core==${ANSIBLE_CORE_VERSION} --break-system-packages; \
 	\
 	rm -rf /var/lib/apt/lists/*
 
-FROM php:${PHP_VERSION}-apache-trixie
+FROM php:${PHP_VERSION}-apache-bookworm
 ARG PHP_VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 LABEL   com.bmeme.project.family='PHP Docker Image' \
-	com.bmeme.project.version="${PHP_VERSION}-apache-trixie" \
+	com.bmeme.project.version="${PHP_VERSION}-apache-bookworm" \
 	com.bmeme.maintainer.1='Daniele Piaggesi <daniele.piaggesi@bmeme.com>' \
 	com.bmeme.maintainer.2='Roberto Mariani <roberto.mariani@bmeme.com>' \
 	com.bmeme.refreshedat='2026-07-08'
@@ -29,7 +30,7 @@ ENV COMPOSER_HOME=/var/www/.composer \
 	TIMEZONE=Europe/Rome
 
 # PHP extensions variables
-ENV IGBINARY_VERSION=3.2.16 \
+ENV IGBINARY_VERSION=3.2.17RC1 \
 	MCRYPT_VERSION=1.0.9 \
 	OAUTH_VERSION=2.0.10 \
 	REDIS_VERSION=6.3.0
@@ -57,20 +58,19 @@ ENV PERSISTENT_PROGRAMS="\
 	default-mysql-client \
 	patch \
 	python3 \
-	python3-packaging \
+	python3-distutils \
 	tzdata \
 	unzip \
 	vim \
 	zip \
 	curl \
 	ca-certificates \
-	libpng16-16t64 \
-	libjpeg62-turbo \
-	libwebp7 \
-	libfreetype6 \
-	libzip5 \
+	libpng16-16 \
+	libzip4 \
 	libmcrypt4 \
-	libicu76"
+	libwebp7 \
+	libjpeg62-turbo \
+	libfreetype6"
 
 WORKDIR /var/www/html
 
@@ -78,13 +78,15 @@ WORKDIR /var/www/html
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 # install Ansible
-COPY --from=ansible /usr/lib/python3.13/lib-dynload /usr/lib/python3.13/lib-dynload
-COPY --from=ansible /usr/local/lib/python3.13/dist-packages /usr/local/lib/python3.13/dist-packages
+COPY --from=ansible /usr/lib/python3.11/lib-dynload /usr/lib/python3.11/lib-dynload
+COPY --from=ansible /usr/local/lib/python3.11/dist-packages /usr/local/lib/python3.11/dist-packages
 COPY --from=ansible /usr/local/bin/ansible* /usr/local/bin/
 COPY scripts/docker-php-entrypoint-env.sh /usr/local/bin/docker-php-entrypoint-env.sh
 
 # install the PHP extensions we need
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/tmp/pear --mount=type=cache,target=/root/.cache/composer set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/tmp/pear \
+	--mount=type=cache,target=/root/.cache/composer set -eux; \
 	\
 	if command -v a2enmod; then \
 	a2enmod rewrite; \
@@ -127,11 +129,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
 	--enable-redis-lzf \
 	; \
 	\
-	docker-php-ext-install -j "$(nproc)" \
+	docker-php-ext-install -j 1 \
 	bcmath \
 	gd \
 	intl \
-	opcache \
 	pdo_mysql \
 	pdo_pgsql \
 	redis \
@@ -149,6 +150,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
 	# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual ${savedAptMark}; \
+	\
+	# IMPORTANT: ignore "not found" lines so we only keep real paths
 	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
 	| awk '/=>/ && $3 ~ /^\// { print $3 }' \
 	| sort -u \
