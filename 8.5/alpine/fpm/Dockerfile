@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.2.32
+ARG PHP_VERSION=8.5.8
 
 FROM composer:2.9.2 AS composer
 FROM php:${PHP_VERSION}-fpm-alpine3.24
@@ -14,7 +14,7 @@ ENV COMPOSER_HOME=/var/www/.composer \
     TIMEZONE=Europe/Rome
 
 # PHP extensions variables
-ENV IGBINARY_VERSION=3.2.16 \
+ENV IGBINARY_VERSION=3.2.17RC1 \
     MCRYPT_VERSION=1.0.9 \
     OAUTH_VERSION=2.0.10 \
     REDIS_VERSION=6.3.0
@@ -107,11 +107,10 @@ RUN --mount=type=cache,target=/tmp/pear,sharing=locked --mount=type=cache,target
     igbinary \
     oauth \
     ; \
-    docker-php-ext-install -j "$(nproc)" \
+    docker-php-ext-install -j 1 \
     bcmath \
     gd \
     intl \
-    opcache \
     pdo_mysql \
     pdo_pgsql \
     redis \
