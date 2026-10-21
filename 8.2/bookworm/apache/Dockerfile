@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.2.32
+ARG PHP_VERSION=8.2.35
 
 FROM composer:2.9.2 AS composer
 FROM php:${PHP_VERSION}-apache-bookworm AS ansible

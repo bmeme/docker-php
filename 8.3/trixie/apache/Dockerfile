@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.3.32
+ARG PHP_VERSION=8.3.36
 
 FROM composer:2.9.2 AS composer
 FROM php:${PHP_VERSION}-apache-trixie AS ansible
